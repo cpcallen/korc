@@ -91,7 +91,6 @@ findFiles(partDir).map(parseFile).forEach(function (fileParts) {
 			//LF/O Engine properties
 			var moduleEngines = jsonPath(part, "$.MODULE[?(@.name[-1:]=='ModuleEngines'||@.name[-1:]=='ModuleEnginesFX'&&@.PROPELLANT[*].name[-1:]=='Oxidizer'||@.PROPELLANT[*].name[-1:]=='SolidFuel')]");
 			if (moduleEngines) {
-				console.assert(moduleEngines.length === 1, "Part has one and only one engine", part);
 				moduleEngines = moduleEngines[0];
 				
 				result.type = "TYPES.LFO_ENGINE";  //WATCH: Might be a booster. If so, gets fixed in Tank section
@@ -101,7 +100,7 @@ findFiles(partDir).map(parseFile).forEach(function (fileParts) {
 				
 				var isps = moduleEngines.atmosphereCurve[moduleEngines.atmosphereCurve.length-1].key;
 				isps.forEach(function (isp) {
-					var split = /^([01]) (\d+)$/.exec(isp);
+					var split = /^([01]) (\d+)(?: -?\d+(?:.\d*)?){0,2}$/.exec(isp);
 					if (split) {
 						if (split[1] === "0") {
 							result.isp_vac = parseInt(split[2]);
